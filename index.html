@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{margin:0}</style>
+<title>Кешір, Айғаным</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@700;800&family=Alegreya+Sans:wght@700;800&display=swap">
+<style>
+  /* Layout: one left-aligned question on a pink ground, two flat squares below. The green one grows with every "Жоқ". Single look by choice. */
+  :root {
+    --pink: #ffc7da;
+    --ink: #4a1230;
+    --green: #1e8e43;
+    --red: #d62839;
+    --white: #ffffff;
+    --font-display: "Alegreya", Georgia, "Times New Roman", serif;
+    --font-body: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+    color-scheme: light;
+  }
+  html, body { height: 100%; }
+  body {
+    background: var(--pink);
+    color: var(--ink);
+    font-family: var(--font-body);
+    padding-inline: 1.25rem;
+    padding-block: 2rem;
+  }
+  .stage {
+    max-width: 36rem; min-height: 100%; margin-inline: auto;
+    display: flex; flex-direction: column; justify-content: center; gap: 2rem;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 800; font-size: clamp(2.4rem, 11vw, 4.2rem);
+    line-height: 1.05; letter-spacing: -0.01em; text-wrap: balance; margin: 0; text-align: center;
+  }
+  .row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1rem; }
+  .sq {
+    font: inherit; font-weight: 800; color: var(--white); border: 0; border-radius: 0.5rem; cursor: pointer;
+    aspect-ratio: 1; max-width: 100%; display: grid; place-items: center; flex: none;
+  }
+  .sq:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
+  .no { width: 7rem; background: var(--red); font-size: 1.75rem; }
+  .yes {
+    --n: 0;
+    width: calc(7rem + (100% - 7rem) * var(--n) / 8);
+    background: var(--green);
+    font-size: calc(1.75rem + var(--n) * 0.6rem);
+  }
+  .yes.full {
+    position: fixed; inset: 0; z-index: 10; width: auto; height: auto; aspect-ratio: auto;
+    border-radius: 0; font-size: 22vmin;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .yes { transition: width 0.25s ease, font-size 0.25s ease; }
+    .sq:active { transform: scale(0.97); }
+  }
+</style>
+
+</head>
+<body>
+<main class="stage">
+  <h1 id="q" aria-live="polite">Айғаным, кешіресің бе?</h1>
+  <div class="row" id="row">
+    <button class="sq yes" id="yes" type="button">Иә</button>
+    <button class="sq no" id="no" type="button">Жоқ</button>
+  </div>
+</main>
+
+<script>
+  (function () {
+    var q = document.getElementById("q");
+    var row = document.getElementById("row");
+    var yes = document.getElementById("yes");
+    var no = document.getElementById("no");
+    var questions = ["Айғаным, кешіресің бе?", "25-і менімен шығасың ба?"];
+    var stage = 0;
+    var n = 0;
+
+    function grow() {
+      yes.style.setProperty("--n", String(Math.min(n, 8)));
+      if (n >= 8) { yes.classList.add("full"); } else { yes.classList.remove("full"); }
+    }
+
+    no.addEventListener("click", function () {
+      n += 1;
+      grow();
+    });
+
+    yes.addEventListener("click", function () {
+      n = 0;
+      grow();
+      if (stage < questions.length - 1) {
+        stage += 1;
+        q.textContent = questions[stage];
+      } else {
+        q.textContent = "Рахмет, Айғаным! 25-і көрісеміз.";
+        row.hidden = true;
+      }
+    });
+  })();
+</script>
+</body>
+</html>
